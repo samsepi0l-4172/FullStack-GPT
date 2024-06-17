@@ -3,4 +3,4 @@ env/
 .DS_Store
 settings.json
 files/
-cache/
+.cache/
