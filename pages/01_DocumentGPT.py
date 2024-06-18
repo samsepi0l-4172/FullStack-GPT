@@ -1,3 +1,4 @@
+# Importing necessary modules and classes
 from langchain.prompts import ChatPromptTemplate
 from langchain.document_loaders import UnstructuredFileLoader
 from langchain.embeddings import CacheBackedEmbeddings, OpenAIEmbeddings
@@ -9,11 +10,13 @@ from langchain.chat_models import ChatOpenAI
 from langchain.callbacks.base import BaseCallbackHandler
 import streamlit as st
 
+# Setting up the Streamlit page configuration
 st.set_page_config(
     page_title="DocumentGPT",
     page_icon="📃",
 )
 
+# Defining a callback handler for the chat model
 class ChatCallbackHandler(BaseCallbackHandler):
     message = ""
 
@@ -27,6 +30,7 @@ class ChatCallbackHandler(BaseCallbackHandler):
         self.message += token
         self.message_box.markdown(self.message)
 
+# Initializing the chat model
 llm = ChatOpenAI(
     temperature=0.1,
     streaming=True,
@@ -35,6 +39,7 @@ llm = ChatOpenAI(
     ],
 )
 
+# Function to embed the file and return a retriever
 @st.cache_data(show_spinner="Embedding file...")
 def embed_file(file):
     file_content = file.read()
@@ -55,15 +60,18 @@ def embed_file(file):
     retriever = vectorstore.as_retriever()
     return retriever
 
+# Function to save a message
 def save_message(message, role):
     st.session_state["messages"].append({"message": message, "role": role})
 
+# Function to send a message
 def send_message(message, role, save=True):
     with st.chat_message(role):
         st.markdown(message)
     if save:
         save_message(message, role)
 
+# Function to paint the history of messages
 def paint_history():
     for message in st.session_state["messages"]:
         send_message(
@@ -72,9 +80,11 @@ def paint_history():
             save=False,
         )
 
+# Function to format documents
 def format_docs(docs):
     return "\n\n".join(document.page_content for document in docs)
 
+# Creating a chat prompt template
 prompt = ChatPromptTemplate.from_messages(
     [
         (
@@ -89,6 +99,7 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
+# Setting up the Streamlit interface
 st.title("DocumentGPT")
 
 st.markdown(
