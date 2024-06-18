@@ -37,13 +37,11 @@ def embed_file(file):
     retriever = vectorstore.as_retriever()
     return retriever
 
-
 def send_message(message, role, save=True):
     with st.chat_message(role):
         st.markdown(message)
     if save:
         st.session_state["messages"].append({"message": message, "role": role})
-
 
 def paint_history():
     for message in st.session_state["messages"]:
@@ -53,10 +51,8 @@ def paint_history():
             save=False,
         )
 
-
 def format_docs(docs):
     return "\n\n".join(document.page_content for document in docs)
-
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -81,7 +77,7 @@ Welcome!
 Use this chatbot to ask questions to an AI about your files!
 
 Upload your files on the sidebar.
-"""
+    """
 )
 
 with st.sidebar:
