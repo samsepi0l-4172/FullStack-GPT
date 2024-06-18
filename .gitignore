@@ -4,3 +4,4 @@ env/
 settings.json
 files/
 .cache/
+.streamlit
