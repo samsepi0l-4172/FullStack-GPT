@@ -17,7 +17,6 @@ llm = ChatOpenAI(
     temperature=0.1,
 )
 
-
 @st.cache_data(show_spinner="Embedding file...")
 def embed_file(file):
     file_content = file.read()
@@ -72,7 +71,6 @@ prompt = ChatPromptTemplate.from_messages(
         ("human", "{question}"),
     ]
 )
-
 
 st.title("DocumentGPT")
 
