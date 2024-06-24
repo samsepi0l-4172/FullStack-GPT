@@ -8,10 +8,12 @@ import streamlit as st
 from langchain.retrievers import WikipediaRetriever
 from langchain.schema import BaseOutputParser, output_parser
 
+
 class JsonOutputParser(BaseOutputParser):
     def parse(self, text):
         text = text.replace("```", "").replace("json", "")
         return json.loads(text)
+
 
 output_parser = JsonOutputParser()
 
@@ -29,8 +31,10 @@ llm = ChatOpenAI(
     callbacks=[StreamingStdOutCallbackHandler()],
 )
 
+
 def format_docs(docs):
     return "\n\n".join(document.page_content for document in docs)
+
 
 questions_prompt = ChatPromptTemplate.from_messages(
     [
@@ -196,6 +200,7 @@ formatting_prompt = ChatPromptTemplate.from_messages(
 
 formatting_chain = formatting_prompt | llm
 
+
 @st.cache_data(show_spinner="Loading file...")
 def split_file(file):
     file_content = file.read()
@@ -211,16 +216,19 @@ def split_file(file):
     docs = loader.load_and_split(text_splitter=splitter)
     return docs
 
+
 @st.cache_data(show_spinner="Making quiz...")
 def run_quiz_chain(_docs, topic):
     chain = {"context": questions_chain} | formatting_chain | output_parser
     return chain.invoke(_docs)
+
 
 @st.cache_data(show_spinner="Searching Wikipedia...")
 def wiki_search(term):
     retriever = WikipediaRetriever(top_k_results=5)
     docs = retriever.get_relevant_documents(term)
     return docs
+
 
 with st.sidebar:
     docs = None
@@ -264,7 +272,7 @@ else:
                 "Select an option.",
                 [answer["answer"] for answer in question["answers"]],
                 index=None,
-                key=f"question_{index}"  # Unique key for each radio widget
+                key=f"question_{index}",  # Unique key for each radio widget
             )
             if {"answer": value, "correct": True} in question["answers"]:
                 st.success("Correct!")

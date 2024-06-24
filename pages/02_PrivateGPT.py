@@ -14,6 +14,7 @@ st.set_page_config(
     page_icon="📃",
 )
 
+
 class ChatCallbackHandler(BaseCallbackHandler):
     message = ""
 
@@ -27,6 +28,7 @@ class ChatCallbackHandler(BaseCallbackHandler):
         self.message += token
         self.message_box.markdown(self.message)
 
+
 llm = ChatOllama(
     model="mistral:latest",
     temperature=0.1,
@@ -35,6 +37,7 @@ llm = ChatOllama(
         ChatCallbackHandler(),
     ],
 )
+
 
 @st.cache_data(show_spinner="Embedding file...")
 def embed_file(file):
@@ -56,14 +59,17 @@ def embed_file(file):
     retriever = vectorstore.as_retriever()
     return retriever
 
+
 def save_message(message, role):
     st.session_state["messages"].append({"message": message, "role": role})
+
 
 def send_message(message, role, save=True):
     with st.chat_message(role):
         st.markdown(message)
     if save:
         save_message(message, role)
+
 
 def paint_history():
     for message in st.session_state["messages"]:
@@ -73,8 +79,10 @@ def paint_history():
             save=False,
         )
 
+
 def format_docs(docs):
     return "\n\n".join(document.page_content for document in docs)
+
 
 prompt = ChatPromptTemplate.from_template(
     """Answer the question using ONLY the following context and not your training data. If you don't know the answer just say you don't know. DON'T make anything up.
