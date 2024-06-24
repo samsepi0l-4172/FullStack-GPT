@@ -257,12 +257,14 @@ if not docs:
 else:
     response = run_quiz_chain(docs, topic if topic else file.name)
     with st.form("questions_form"):
-        for question in response["questions"]:
+        for index, question in enumerate(response["questions"]):
             st.write(question["question"])
+            # Use the question index to generate a unique key for each radio button
             value = st.radio(
                 "Select an option.",
                 [answer["answer"] for answer in question["answers"]],
                 index=None,
+                key=f"question_{index}"  # Unique key for each radio widget
             )
             if {"answer": value, "correct": True} in question["answers"]:
                 st.success("Correct!")
