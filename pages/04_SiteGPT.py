@@ -58,9 +58,16 @@ answers_prompt = ChatPromptTemplate.from_template(
 def get_answers(
     inputs,
 ):
-    docs = inputs["docs"]
-    question = inputs["question"]
-    answers_chain = answers_prompt | llm
+    docs = inputs[
+        "docs"
+    ]
+    question = inputs[
+        "question"
+    ]
+    answers_chain = (
+        answers_prompt
+        | llm
+    )
     # answers = []
     # for doc in docs:
     #     result = answers_chain.invoke(
@@ -77,8 +84,12 @@ def get_answers(
                         "context": doc.page_content,
                     }
                 ).content,
-                "source": doc.metadata["source"],
-                "date": doc.metadata["lastmod"],
+                "source": doc.metadata[
+                    "source"
+                ],
+                "date": doc.metadata[
+                    "lastmod"
+                ],
             }
             for doc in docs
         ],
@@ -110,9 +121,16 @@ choose_prompt = ChatPromptTemplate.from_messages(
 def choose_answer(
     inputs,
 ):
-    answers = inputs["answers"]
-    question = inputs["question"]
-    choose_chain = choose_prompt | llm
+    answers = inputs[
+        "answers"
+    ]
+    question = inputs[
+        "question"
+    ]
+    choose_chain = (
+        choose_prompt
+        | llm
+    )
     condensed = "\n\n".join(
         f"{answer['answer']}\nSource:{answer['source']}\nDate:{answer['date']}\n"
         for answer in answers
@@ -128,14 +146,20 @@ def choose_answer(
 def parse_page(
     soup,
 ):
-    header = soup.find("header")
-    footer = soup.find("footer")
+    header = soup.find(
+        "header"
+    )
+    footer = soup.find(
+        "footer"
+    )
     if header:
         header.decompose()
     if footer:
         footer.decompose()
     return (
-        str(soup.get_text())
+        str(
+            soup.get_text()
+        )
         .replace(
             "\n",
             " ",
@@ -151,7 +175,9 @@ def parse_page(
     )
 
 
-@st.cache_data(show_spinner="Loading website...")
+@st.cache_data(
+    show_spinner="Loading website..."
+)
 def load_website(
     url,
 ):
@@ -164,12 +190,16 @@ def load_website(
         parsing_function=parse_page,
     )
     loader.requests_per_second = 2
-    docs = loader.load_and_split(text_splitter=splitter)
+    docs = loader.load_and_split(
+        text_splitter=splitter
+    )
     vector_store = FAISS.from_documents(
         docs,
         OpenAIEmbeddings(),
     )
-    return vector_store.as_retriever()
+    return (
+        vector_store.as_retriever()
+    )
 
 
 st.set_page_config(
@@ -197,22 +227,37 @@ with st.sidebar:
 
 
 if url:
-    if ".xml" not in url:
+    if (
+        ".xml"
+        not in url
+    ):
         with st.sidebar:
-            st.error("Please write down a Sitemap URL.")
+            st.error(
+                "Please write down a Sitemap URL."
+            )
     else:
-        retriever = load_website(url)
-        query = st.text_input("Ask a question to the website.")
+        retriever = load_website(
+            url
+        )
+        query = st.text_input(
+            "Ask a question to the website."
+        )
         if query:
             chain = (
                 {
                     "docs": retriever,
                     "question": RunnablePassthrough(),
                 }
-                | RunnableLambda(get_answers)
-                | RunnableLambda(choose_answer)
+                | RunnableLambda(
+                    get_answers
+                )
+                | RunnableLambda(
+                    choose_answer
+                )
             )
-            result = chain.invoke(query)
+            result = chain.invoke(
+                query
+            )
             st.markdown(
                 result.content.replace(
                     "$",
