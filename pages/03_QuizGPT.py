@@ -1,5 +1,6 @@
 from langchain.document_loaders import UnstructuredFileLoader
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.chat_models import ChatOpenAI
 import streamlit as st
 from langchain.retrievers import WikipediaRetriever
 
@@ -9,6 +10,11 @@ st.set_page_config(
 )
 
 st.title("QuizGPT")
+
+llm = ChatOpenAI(
+    temperature=0.1,
+    model="gpt-3.5-turbo-0125",
+)
 
 @st.cache_data(show_spinner="Loading file...")
 def split_file(file):
@@ -26,6 +32,7 @@ def split_file(file):
     return docs
 
 with st.sidebar:
+    docs = None
     choice = st.selectbox(
         "Choose what you want to use.",
         (
@@ -40,10 +47,22 @@ with st.sidebar:
         )
         if file:
             docs = split_file(file)
-            st.write(docs)
     else:
         topic = st.text_input("Search Wikipedia...")
         if topic:
             retriever = WikipediaRetriever(top_k_results=5)
             with st.status("Searching Wikipedia..."):
                 docs = retriever.get_relevant_documents(topic)
+
+if not docs:
+    st.markdown(
+        """
+    Welcome to QuizGPT.
+                
+    I will make a quiz from Wikipedia articles or files you upload to test your knowledge and help you study.
+                
+    Get started by uploading a file or searching on Wikipedia in the sidebar.
+        """
+    )
+else:
+    st.write(docs)
