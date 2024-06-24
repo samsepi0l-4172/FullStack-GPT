@@ -26,7 +26,7 @@ st.title("QuizGPT")
 
 llm = ChatOpenAI(
     temperature=0.1,
-    model="gpt-3.5-turbo-1106",
+    model="gpt-3.5-turbo",
     streaming=True,
     callbacks=[StreamingStdOutCallbackHandler()],
 )
@@ -66,7 +66,7 @@ questions_prompt = ChatPromptTemplate.from_messages(
     Your turn!
          
     Context: {context}
-    """,
+        """,
         )
     ]
 )
