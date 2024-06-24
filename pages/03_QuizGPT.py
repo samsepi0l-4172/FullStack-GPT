@@ -1,39 +1,78 @@
 import json
-from langchain.document_loaders import UnstructuredFileLoader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
-from langchain.callbacks import StreamingStdOutCallbackHandler
+from langchain.document_loaders import (
+    UnstructuredFileLoader,
+)
+from langchain.text_splitter import (
+    CharacterTextSplitter,
+)
+from langchain.chat_models import (
+    ChatOpenAI,
+)
+from langchain.prompts import (
+    ChatPromptTemplate,
+)
+from langchain.callbacks import (
+    StreamingStdOutCallbackHandler,
+)
 import streamlit as st
-from langchain.retrievers import WikipediaRetriever
-from langchain.schema import BaseOutputParser, output_parser
+from langchain.retrievers import (
+    WikipediaRetriever,
+)
+from langchain.schema import (
+    BaseOutputParser,
+    output_parser,
+)
 
 
-class JsonOutputParser(BaseOutputParser):
-    def parse(self, text):
-        text = text.replace("```", "").replace("json", "")
-        return json.loads(text)
+class JsonOutputParser(
+    BaseOutputParser
+):
+    def parse(
+        self,
+        text,
+    ):
+        text = text.replace(
+            "```",
+            "",
+        ).replace(
+            "json",
+            "",
+        )
+        return json.loads(
+            text
+        )
 
 
-output_parser = JsonOutputParser()
+output_parser = (
+    JsonOutputParser()
+)
 
 st.set_page_config(
     page_title="QuizGPT",
     page_icon="❓",
 )
 
-st.title("QuizGPT")
+st.title(
+    "QuizGPT"
+)
 
 llm = ChatOpenAI(
     temperature=0.1,
     model="gpt-3.5-turbo",
     streaming=True,
-    callbacks=[StreamingStdOutCallbackHandler()],
+    callbacks=[
+        StreamingStdOutCallbackHandler()
+    ],
 )
 
 
-def format_docs(docs):
-    return "\n\n".join(document.page_content for document in docs)
+def format_docs(
+    docs,
+):
+    return "\n\n".join(
+        document.page_content
+        for document in docs
+    )
 
 
 questions_prompt = ChatPromptTemplate.from_messages(
@@ -71,7 +110,13 @@ questions_prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-questions_chain = {"context": format_docs} | questions_prompt | llm
+questions_chain = (
+    {
+        "context": format_docs
+    }
+    | questions_prompt
+    | llm
+)
 
 formatting_prompt = ChatPromptTemplate.from_messages(
     [
@@ -198,35 +243,74 @@ formatting_prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-formatting_chain = formatting_prompt | llm
+formatting_chain = (
+    formatting_prompt
+    | llm
+)
 
 
-@st.cache_data(show_spinner="Loading file...")
-def split_file(file):
-    file_content = file.read()
+@st.cache_data(
+    show_spinner="Loading file..."
+)
+def split_file(
+    file,
+):
+    file_content = (
+        file.read()
+    )
     file_path = f"./.cache/quiz_files/{file.name}"
-    with open(file_path, "wb") as f:
-        f.write(file_content)
+    with open(
+        file_path,
+        "wb",
+    ) as f:
+        f.write(
+            file_content
+        )
     splitter = CharacterTextSplitter.from_tiktoken_encoder(
         separator="\n",
         chunk_size=600,
         chunk_overlap=100,
     )
-    loader = UnstructuredFileLoader(file_path)
-    docs = loader.load_and_split(text_splitter=splitter)
+    loader = UnstructuredFileLoader(
+        file_path
+    )
+    docs = loader.load_and_split(
+        text_splitter=splitter
+    )
     return docs
 
 
-@st.cache_data(show_spinner="Making quiz...")
-def run_quiz_chain(_docs, topic):
-    chain = {"context": questions_chain} | formatting_chain | output_parser
-    return chain.invoke(_docs)
+@st.cache_data(
+    show_spinner="Making quiz..."
+)
+def run_quiz_chain(
+    _docs,
+    topic,
+):
+    chain = (
+        {
+            "context": questions_chain
+        }
+        | formatting_chain
+        | output_parser
+    )
+    return chain.invoke(
+        _docs
+    )
 
 
-@st.cache_data(show_spinner="Searching Wikipedia...")
-def wiki_search(term):
-    retriever = WikipediaRetriever(top_k_results=5)
-    docs = retriever.get_relevant_documents(term)
+@st.cache_data(
+    show_spinner="Searching Wikipedia..."
+)
+def wiki_search(
+    term,
+):
+    retriever = WikipediaRetriever(
+        top_k_results=5
+    )
+    docs = retriever.get_relevant_documents(
+        term
+    )
     return docs
 
 
@@ -240,19 +324,34 @@ with st.sidebar:
             "Wikipedia Article",
         ),
     )
-    if choice == "File":
+    if (
+        choice
+        == "File"
+    ):
         file = st.file_uploader(
             "Upload a .docx , .txt or .pdf file",
-            type=["pdf", "txt", "docx"],
+            type=[
+                "pdf",
+                "txt",
+                "docx",
+            ],
         )
         if file:
-            docs = split_file(file)
+            docs = split_file(
+                file
+            )
     else:
-        topic = st.text_input("Search Wikipedia...")
+        topic = st.text_input(
+            "Search Wikipedia..."
+        )
         if topic:
-            docs = wiki_search(topic)
+            docs = wiki_search(
+                topic
+            )
 
-if not docs:
+if (
+    not docs
+):
     st.markdown(
         """
     Welcome to QuizGPT.
@@ -263,19 +362,61 @@ if not docs:
         """
     )
 else:
-    response = run_quiz_chain(docs, topic if topic else file.name)
-    with st.form("questions_form"):
-        for index, question in enumerate(response["questions"]):
-            st.write(question["question"])
+    response = run_quiz_chain(
+        docs,
+        topic
+        if topic
+        else file.name,
+    )
+    with st.form(
+        "questions_form"
+    ):
+        for (
+            index,
+            question,
+        ) in enumerate(
+            response[
+                "questions"
+            ]
+        ):
+            st.write(
+                question[
+                    "question"
+                ]
+            )
             # Use the question index to generate a unique key for each radio button
             value = st.radio(
                 "Select an option.",
-                [answer["answer"] for answer in question["answers"]],
+                [
+                    answer[
+                        "answer"
+                    ]
+                    for answer in question[
+                        "answers"
+                    ]
+                ],
                 index=None,
                 key=f"question_{index}",  # Unique key for each radio widget
             )
-            if {"answer": value, "correct": True} in question["answers"]:
-                st.success("Correct!")
-            elif value is not None:
-                st.error("Wrong!")
-        button = st.form_submit_button()
+            if (
+                {
+                    "answer": value,
+                    "correct": True,
+                }
+                in question[
+                    "answers"
+                ]
+            ):
+                st.success(
+                    "Correct!"
+                )
+            elif (
+                value
+                is not None
+            ):
+                st.error(
+                    "Wrong!"
+                )
+        button = (
+            st.form_submit_button()
+        )

@@ -1,10 +1,25 @@
-from langchain.document_loaders import SitemapLoader
-from langchain.schema.runnable import RunnableLambda, RunnablePassthrough
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores.faiss import FAISS
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
+from langchain.document_loaders import (
+    SitemapLoader,
+)
+from langchain.schema.runnable import (
+    RunnableLambda,
+    RunnablePassthrough,
+)
+from langchain.text_splitter import (
+    RecursiveCharacterTextSplitter,
+)
+from langchain.vectorstores.faiss import (
+    FAISS,
+)
+from langchain.embeddings import (
+    OpenAIEmbeddings,
+)
+from langchain.chat_models import (
+    ChatOpenAI,
+)
+from langchain.prompts import (
+    ChatPromptTemplate,
+)
 import streamlit as st
 
 llm = ChatOpenAI(
@@ -40,7 +55,9 @@ answers_prompt = ChatPromptTemplate.from_template(
 )
 
 
-def get_answers(inputs):
+def get_answers(
+    inputs,
+):
     docs = inputs["docs"]
     question = inputs["question"]
     answers_chain = answers_prompt | llm
@@ -55,7 +72,10 @@ def get_answers(inputs):
         "answers": [
             {
                 "answer": answers_chain.invoke(
-                    {"question": question, "context": doc.page_content}
+                    {
+                        "question": question,
+                        "context": doc.page_content,
+                    }
                 ).content,
                 "source": doc.metadata["source"],
                 "date": doc.metadata["lastmod"],
@@ -79,12 +99,17 @@ choose_prompt = ChatPromptTemplate.from_messages(
             Answers: {answers}
             """,
         ),
-        ("human", "{question}"),
+        (
+            "human",
+            "{question}",
+        ),
     ]
 )
 
 
-def choose_answer(inputs):
+def choose_answer(
+    inputs,
+):
     answers = inputs["answers"]
     question = inputs["question"]
     choose_chain = choose_prompt | llm
@@ -100,7 +125,9 @@ def choose_answer(inputs):
     )
 
 
-def parse_page(soup):
+def parse_page(
+    soup,
+):
     header = soup.find("header")
     footer = soup.find("footer")
     if header:
@@ -109,14 +136,25 @@ def parse_page(soup):
         footer.decompose()
     return (
         str(soup.get_text())
-        .replace("\n", " ")
-        .replace("\xa0", " ")
-        .replace("CloseSearch Submit Blog", "")
+        .replace(
+            "\n",
+            " ",
+        )
+        .replace(
+            "\xa0",
+            " ",
+        )
+        .replace(
+            "CloseSearch Submit Blog",
+            "",
+        )
     )
 
 
 @st.cache_data(show_spinner="Loading website...")
-def load_website(url):
+def load_website(
+    url,
+):
     splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
         chunk_size=1000,
         chunk_overlap=200,
@@ -127,7 +165,10 @@ def load_website(url):
     )
     loader.requests_per_second = 2
     docs = loader.load_and_split(text_splitter=splitter)
-    vector_store = FAISS.from_documents(docs, OpenAIEmbeddings())
+    vector_store = FAISS.from_documents(
+        docs,
+        OpenAIEmbeddings(),
+    )
     return vector_store.as_retriever()
 
 
@@ -172,4 +213,9 @@ if url:
                 | RunnableLambda(choose_answer)
             )
             result = chain.invoke(query)
-            st.markdown(result.content.replace("$", "\$"))
+            st.markdown(
+                result.content.replace(
+                    "$",
+                    "\$",
+                )
+            )
