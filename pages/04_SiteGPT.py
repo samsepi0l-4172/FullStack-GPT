@@ -22,13 +22,13 @@ answers_prompt = ChatPromptTemplate.from_template(
     Make sure to always include the answer's score even if it's 0.
 
     Context: {context}
-                                                  
+
     Examples:
-                                                  
+
     Question: How far away is the moon?
     Answer: The moon is 384,400 km away.
     Score: 5
-                                                  
+
     Question: How far away is the sun?
     Answer: I don't know
     Score: 0
