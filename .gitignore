@@ -5,3 +5,6 @@ settings.json
 files/
 .cache/
 .streamlit
+model.json
+prompt.json
+prompt.yaml
