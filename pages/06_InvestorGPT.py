@@ -11,7 +11,7 @@ from langchain.utilities import DuckDuckGoSearchAPIWrapper
 
 llm = ChatOpenAI(
     temperature=0.1,
-    model_name="gpt-3.5-turbo",
+    model_name="gpt-3.5-turbo-0125",
 )
 
 alpha_vantage_api_key = os.environ.get("ALPHA_VANTAGE_API_KEY")
