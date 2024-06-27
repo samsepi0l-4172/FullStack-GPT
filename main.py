@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import pinecone
 import os
 from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Pinecone
+from langchain.vectorstores import pinecone as Pinecone
 
 load_dotenv()
 
