@@ -8,3 +8,4 @@ files/
 model.json
 prompt.json
 prompt.yaml
+movies.sqlite
