@@ -10,3 +10,4 @@ prompt.json
 prompt.yaml
 movies.sqlite
 recipes.csv
+__pycache__/
