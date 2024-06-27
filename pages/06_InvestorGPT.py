@@ -9,7 +9,10 @@ from pydantic import BaseModel, Field
 from langchain.agents import initialize_agent, AgentType
 from langchain.utilities import DuckDuckGoSearchAPIWrapper
 
-llm = ChatOpenAI(temperature=0.1, model_name="gpt-3.5-turbo-1106")
+llm = ChatOpenAI(
+    temperature=0.1,
+    model_name="gpt-3.5-turbo",
+)
 
 alpha_vantage_api_key = os.environ.get("ALPHA_VANTAGE_API_KEY")
 
@@ -27,9 +30,9 @@ class StockMarketSymbolSearchTool(BaseTool):
     It takes a query as an argument.
     
     """
-    args_schema: Type[
+    args_schema: Type[StockMarketSymbolSearchToolArgsSchema] = (
         StockMarketSymbolSearchToolArgsSchema
-    ] = StockMarketSymbolSearchToolArgsSchema
+    )
 
     def _run(self, query):
         ddg = DuckDuckGoSearchAPIWrapper()
