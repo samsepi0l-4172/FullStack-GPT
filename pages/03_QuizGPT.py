@@ -25,8 +25,8 @@ st.set_page_config(
 st.title("QuizGPT")
 
 llm = ChatOpenAI(
-    temperature=0.1,
-    model="gpt-3.5-turbo-1106",
+    temperature=0.5,
+    model_name="gpt-4o",
     streaming=True,
     callbacks=[StreamingStdOutCallbackHandler()],
 )

@@ -8,7 +8,8 @@ from langchain.prompts import ChatPromptTemplate
 import streamlit as st
 
 llm = ChatOpenAI(
-    temperature=0.1,
+    temperature=0.5,
+    model_name="gpt-4o",
 )
 
 answers_prompt = ChatPromptTemplate.from_template(

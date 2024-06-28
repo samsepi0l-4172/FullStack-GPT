@@ -31,6 +31,7 @@ class ChatCallbackHandler(BaseCallbackHandler):
 
 llm = ChatOpenAI(
     temperature=0.1,
+    model_name="gpt-4o",
     streaming=True,
     callbacks=[
         ChatCallbackHandler(),
