@@ -15,7 +15,8 @@ from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import CacheBackedEmbeddings, OpenAIEmbeddings
 
 llm = ChatOpenAI(
-    temperature=0.1,
+    temperature=0.5,
+    model_name="gpt-4o",
 )
 
 has_transcript = os.path.exists("./.cache/podcast.txt")
