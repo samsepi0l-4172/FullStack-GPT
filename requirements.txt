@@ -243,5 +243,5 @@ wheel==0.43.0
 wrapt==1.16.0
 yarl==1.9.4
 youtube-transcript-api==0.6.2
-yt-dlp==2023.12.30
+yt-dlp==2024.7.1
 zipp==3.19.2
