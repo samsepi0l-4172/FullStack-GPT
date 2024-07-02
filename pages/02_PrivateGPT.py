@@ -1,11 +1,12 @@
-from langchain.prompts import ChatPromptTemplate
-from langchain.document_loaders import UnstructuredFileLoader
-from langchain.embeddings import CacheBackedEmbeddings, OllamaEmbeddings
-from langchain.schema.runnable import RunnableLambda, RunnablePassthrough
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_community.document_loaders import UnstructuredFileLoader
+from langchain_community.embeddings import OllamaEmbeddings
+from langchain.embeddings.cache import CacheBackedEmbeddings
+from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain.storage import LocalFileStore
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores.faiss import FAISS
-from langchain.chat_models import ChatOllama
+from langchain_community.vectorstores import FAISS
+from langchain_community.chat_models import ChatOllama
 from langchain.callbacks.base import BaseCallbackHandler
 import streamlit as st
 
@@ -32,7 +33,6 @@ class ChatCallbackHandler(BaseCallbackHandler):
 llm = ChatOllama(
     model="mistral:latest",
     temperature=0.1,
-    streaming=True,
     callbacks=[
         ChatCallbackHandler(),
     ],
