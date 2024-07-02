@@ -7,12 +7,13 @@ import glob
 import openai
 import os
 from langchain_openai import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from langchain.document_loaders import TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import StrOutputParser
-from langchain.vectorstores.faiss import FAISS
-from langchain.embeddings import CacheBackedEmbeddings, OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_openai.embeddings import OpenAIEmbeddings
+from langchain.embeddings.cache import CacheBackedEmbeddings
 
 llm = ChatOpenAI(
     temperature=0.5,
