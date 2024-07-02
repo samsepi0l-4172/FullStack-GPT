@@ -10,5 +10,5 @@ chat = ChatOpenAI(
     temperature=0.5,
 )
 with get_openai_callback() as usage:
-    chat.predict("What is the recipe for soju")
+    chat.invoke("What is the recipe for soju")
     print(usage)
