@@ -11,3 +11,4 @@ prompt.yaml
 movies.sqlite
 recipes.csv
 __pycache__/
+theory/
