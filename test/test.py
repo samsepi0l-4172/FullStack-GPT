@@ -1,19 +1,14 @@
-import pydantic
+from dotenv import load_dotenv
+import os
 from langchain_openai import ChatOpenAI
-from langchain.callbacks import StreamingStdOutCallbackHandler
-from langchain.prompts.prompt import PromptTemplate
-from langchain.globals import set_llm_cache
-from langchain.cache import InMemoryCache
+from langchain.callbacks import get_openai_callback
 
-
-set_llm_cache(InMemoryCache())
-
+load_dotenv()
+OpenaiAPIKey: str | None = os.getenv("OPENAI_API_KEY")
 chat = ChatOpenAI(
+    api_key=OpenaiAPIKey,
     temperature=0.5,
-    streaming=True,
-    callbacks=[
-        StreamingStdOutCallbackHandler(),
-    ],
 )
-
-chat.predict("How do you make italian pasta")
+with get_openai_callback() as usage:
+    chat.predict("What is the recipe for soju")
+    print(usage)
