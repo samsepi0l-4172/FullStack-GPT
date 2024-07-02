@@ -1,4 +1,5 @@
-from langchian.chat_models import ChatOpenAI
+import pydantic
+from langchain_openai import ChatOpenAI
 from langchain.callbacks import StreamingStdOutCallbackHandler
 from langchain.prompts.prompt import PromptTemplate
 
