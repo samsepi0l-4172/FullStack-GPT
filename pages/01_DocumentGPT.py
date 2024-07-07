@@ -62,7 +62,12 @@ def embed_file(file):
 
 
 def save_message(message, role):
-    st.session_state["messages"].append({"message": message, "role": role})
+    st.session_state["messages"].append(
+        {
+            "message": message,
+            "role": role,
+        }
+    )
 
 
 def send_message(message, role, save=True):
