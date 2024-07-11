@@ -243,7 +243,11 @@ with st.sidebar:
     if choice == "File":
         file = st.file_uploader(
             "Upload a .docx , .txt or .pdf file",
-            type=["pdf", "txt", "docx"],
+            type=[
+                "pdf",
+                "txt",
+                "docx",
+            ],
         )
         if file:
             docs = split_file(file)
