@@ -26,7 +26,6 @@ st.title("QuizGPT")
 
 llm = ChatOpenAI(
     temperature=0.5,
-    model_name="gpt-4o",
     streaming=True,
     callbacks=[StreamingStdOutCallbackHandler()],
 )
@@ -270,7 +269,7 @@ if not docs:
 else:
     response = run_quiz_chain(docs, topic if topic else file.name)
     with st.form("questions_form"):
-        # st.write(response)
+        st.write(response)
         question_index = 0
         for question in response["questions"]:
             st.write(question["question"])
