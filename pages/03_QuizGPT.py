@@ -280,7 +280,10 @@ else:
                 index=None,
                 key=f"question_{question_index}",
             )
-            if {"answer": value, "correct": True} in question["answers"]:
+            if {
+                "answer": value,
+                "correct": True,
+            } in question["answers"]:
                 st.success("Correct!")
             elif value is not None:
                 st.error("Wrong!")
