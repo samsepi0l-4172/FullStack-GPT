@@ -12,3 +12,4 @@ movies.sqlite
 recipes.csv
 __pycache__/
 theory/
+.file_cache
