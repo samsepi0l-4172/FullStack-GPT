@@ -7,6 +7,8 @@ from langchain.callbacks import StreamingStdOutCallbackHandler
 import streamlit as st
 from langchain_community.retrievers import WikipediaRetriever
 from langchain.schema import BaseOutputParser, output_parser
+from pydantic.v1 import BaseModel, Field
+from langchain_core.tools import Tool
 
 
 class JsonOutputParser(BaseOutputParser):
