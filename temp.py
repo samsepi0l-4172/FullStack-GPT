@@ -21,17 +21,17 @@ if len(msgs.messages) == 0:
 
 view_messages = st.expander("View the message contents in session state")
 
-# Get an OpenAI API Key before continuing
-if "openai_api_key" in st.secrets:
-    openai_api_key = st.secrets.openai_api_key
-else:
-    openai_api_key = st.sidebar.text_input(
-        "OpenAI API Key",
-        type="password",
-    )
-if not openai_api_key:
-    st.info("Enter an OpenAI API Key to continue")
-    st.stop()
+# # Get an OpenAI API Key before continuing
+# if "openai_api_key" in st.secrets:
+#     openai_api_key = st.secrets.openai_api_key
+# else:
+#     openai_api_key = st.sidebar.text_input(
+#         "OpenAI API Key",
+#         type="password",
+#     )
+# if not openai_api_key:
+#     st.info("Enter an OpenAI API Key to continue")
+#     st.stop()
 
 # Set up the LangChain, passing in Message History
 
@@ -49,7 +49,7 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-chain = prompt | ChatOpenAI(api_key=openai_api_key)
+chain = prompt | ChatOpenAI()
 chain_with_history = RunnableWithMessageHistory(
     chain,
     lambda session_id: msgs,
