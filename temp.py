@@ -1,9 +1,8 @@
+import streamlit as st
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
-
-import streamlit as st
 
 st.set_page_config(page_title="StreamlitChatMessageHistory", page_icon="📖")
 st.title("📖 StreamlitChatMessageHistory")
