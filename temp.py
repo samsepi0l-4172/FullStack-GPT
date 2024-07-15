@@ -25,7 +25,10 @@ view_messages = st.expander("View the message contents in session state")
 if "openai_api_key" in st.secrets:
     openai_api_key = st.secrets.openai_api_key
 else:
-    openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+    openai_api_key = st.sidebar.text_input(
+        "OpenAI API Key",
+        type="password",
+    )
 if not openai_api_key:
     st.info("Enter an OpenAI API Key to continue")
     st.stop()
@@ -34,9 +37,15 @@ if not openai_api_key:
 
 prompt = ChatPromptTemplate.from_messages(
     [
-        ("system", "You are an AI chatbot having a conversation with a human."),
+        (
+            "system",
+            "You are an AI chatbot having a conversation with a human.",
+        ),
         MessagesPlaceholder(variable_name="history"),
-        ("human", "{question}"),
+        (
+            "human",
+            "{question}",
+        ),
     ]
 )
 
@@ -56,8 +65,15 @@ for msg in msgs.messages:
 if prompt := st.chat_input():
     st.chat_message("human").write(prompt)
     # Note: new messages are saved to history automatically by Langchain during run
-    config = {"configurable": {"session_id": "any"}}
-    response = chain_with_history.invoke({"question": prompt}, config)
+    config = {
+        "configurable": {
+            "session_id": "any",
+        }
+    }
+    response = chain_with_history.invoke(
+        {"question": prompt},
+        config,
+    )
     st.chat_message("ai").write(response.content)
 
 # Draw the messages at the end, so newly generated ones show up immediately
